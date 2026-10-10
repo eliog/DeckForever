@@ -21,7 +21,7 @@ import urllib.request
 from . import art
 from . import steam_shortcuts as ss
 
-VERSION = "0.3.2"
+VERSION = "0.3.3"
 BNET_URL = ("https://www.battle.net/download/getInstallerForGame"
             "?os=win&gameProgram=BATTLENET_APP&version=Live")
 GE_API = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
