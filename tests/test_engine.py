@@ -292,6 +292,7 @@ class T(unittest.TestCase):
         with open(self.e.cf_launcher) as f:
             wrapper = f.read()
         self.assertIn("unset LD_PRELOAD LD_LIBRARY_PATH", wrapper)
+        self.assertIn("configure-curseforge", wrapper)      # registers the game before every start
         self.assertIn("exec ./CurseForge.AppImage", wrapper)
         self.assertTrue(os.access(self.e.cf_launcher, os.X_OK))
         # configure: record written, storage points at it, idempotent

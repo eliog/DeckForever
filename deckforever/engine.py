@@ -957,6 +957,8 @@ class Engine:
                     '      STEAM_ZENITY GTK_IM_MODULE QT_IM_MODULE SDL_VIDEO_X11_FORCE_EGL \\\n'
                     '      ENABLE_VK_LAYER_VALVE_steam_overlay_1 ENABLE_VK_LAYER_VALVE_steam_fossilize_1\n'
                     'cd "$(dirname "$0")"\n'
+                    '# Register the WoW client in CurseForge\'s game list if it is not there yet (quiet, never blocks).\n'
+                    '[ -x ../app/run.sh ] && ../app/run.sh configure-curseforge >/dev/null 2>&1 || true\n'
                     'exec ./CurseForge.AppImage "$@"\n')
         os.chmod(self.cf_launcher, 0o755)
         return self.cf_launcher

@@ -47,6 +47,7 @@ USAGE = """usage: python3 -m deckforever [command] [options]
   install        install/repair GE-Proton, Battle.net and the Steam shortcut
   adopt [dir]    move an existing WoW install (NonSteamLaunchers etc.) into our folder
   curseforge     install/update CurseForge, add its Steam shortcut, point it at the game
+  configure-curseforge   (re)register the WoW client in CurseForge's game list; run by its launcher
   backup         back up WTF + Interface + Battle.net.config (settings, keybinds, addons)
   restore [file] restore a backup (latest if no file given)
   reinstall      fresh reinstall: backup -> wipe prefix -> install -> restore
@@ -75,6 +76,9 @@ def main(argv):
             e.preflight(); e.adopt(args[0] if args else None)
         elif cmd == "curseforge":
             e.curseforge(update="--update" in flags)
+        elif cmd == "configure-curseforge":          # used by tools/launch-curseforge.sh before each start
+            e.preflight()
+            print("configured" if e.configure_curseforge() else "nothing to do")
         elif cmd == "backup":
             e.preflight(); print(e.backup())
         elif cmd == "restore":
