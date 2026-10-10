@@ -362,7 +362,8 @@ class T(unittest.TestCase):
             self.assertTrue(self.e.ensure_runtime(timeout_s=10))
         finally:
             sp.Popen = real_popen
-        self.assertEqual(opened[0][:2], ["xdg-open", "steam://install/4183110"])
+        self.assertIn(opened[0][0], ("steam", "xdg-open"))
+        self.assertEqual(opened[0][1], "steam://install/4183110")
         self.assertTrue(self.e.ensure_runtime())          # already there: no prompt
 
     def test_require_flavor_message(self):

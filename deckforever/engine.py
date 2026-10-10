@@ -446,7 +446,9 @@ class Engine:
                      "Click Install (or Next) there and wait for the download to finish. DeckForever "
                      "continues on its own when it is done.")
         self.step(f"Waiting for Steam to download {name} (about 500 MB)...")
-        subprocess.Popen(["xdg-open", f"steam://install/{appid}"], stdout=subprocess.DEVNULL,
+        # Hand the URL to the running Steam client directly; xdg-open can also wake Discover.
+        opener = ["steam"] if shutil.which("steam") else ["xdg-open"]
+        subprocess.Popen(opener + [f"steam://install/{appid}"], stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, start_new_session=True)
         deadline = time.time() + timeout_s
         while time.time() < deadline:
