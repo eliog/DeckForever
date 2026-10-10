@@ -136,6 +136,14 @@ third-party logos are shipped.
   writes the file executable to avoid this; if it still happens, press Repair again.
 - **Logs**: `~/Games/DeckForever/logs/`. The Details pane in the window shows the same.
 
+## Updates
+
+The app checks GitHub's latest release once in a while (at most every 6 hours) and, when a newer
+version exists, shows an **Update to vX.Y.Z** button in its footer. Pressing it downloads that
+release, replaces the app copy in `~/Games/DeckForever/app` (your settings and files are kept)
+and restarts the app. The one-file installer always fetches the latest release as well. From the
+command line: `./run.sh check-update` and `./run.sh update`.
+
 ## Folder layout
 
 ```

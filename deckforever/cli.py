@@ -52,6 +52,8 @@ USAGE = """usage: python3 -m deckforever [command] [options]
   restore [file] restore a backup (latest if no file given)
   reinstall      fresh reinstall: backup -> wipe prefix -> install -> restore
   update-proton  download the newest GE-Proton and switch shortcuts to it
+  check-update   compare this version with the latest GitHub release
+  update         download the latest release and replace the app copy
   status         show what is installed
   uninstall      remove Steam shortcuts and optionally the whole folder
 
@@ -85,13 +87,22 @@ def main(argv):
             e.preflight(); e.restore(args[0] if args else None)
         elif cmd == "reinstall":
             e.reinstall()
+        elif cmd == "update":
+            e.preflight(); info = e.check_update(force=True)
+            if not info["newer"] and "--force" not in flags:
+                print(f"Already current: v{info['current']} (latest release {info['latest']})")
+            else:
+                v = e.self_update(); print(f"Updated to {v}. Start the app again.")
+        elif cmd == "check-update":
+            info = e.check_update(force=True)
+            print(f"current v{info['current']}, latest {info['latest']}: {'update available' if info['newer'] else 'up to date'}")
         elif cmd == "update-proton":
             e.update_proton()
         elif cmd == "uninstall":
             e.uninstall()
         elif cmd == "status":
             st = e.status()
-            print(f"{eng.APP_NAME} v{st['version']}")
+            print(f"{eng.APP_NAME} v{st['version']}" + (f"  (update available: {st['latest']})" if st['update_available'] else ""))
             print(f"  Install folder : {st['root']}")
             print(f"  GE-Proton      : {st['proton'] or 'none'}")
             print(f"  Prefix         : {'present' if st['prefix'] else 'missing'}")

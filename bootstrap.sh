@@ -8,7 +8,13 @@ DEST="${DECKFOREVER_ROOT:-$HOME/Games/DeckForever}/app"
 TMP="$(mktemp -d)"
 cleanup() { rm -rf "$TMP"; }
 trap cleanup EXIT
-curl -fsSL -o "$TMP/app.tar.gz" "https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz"
+# Install the latest release; fall back to the branch if the API is unreachable.
+TAG="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep -m1 '"tag_name"' | cut -d'"' -f4 || true)"
+if [[ -n "$TAG" ]]; then
+    curl -fsSL -o "$TMP/app.tar.gz" "https://github.com/$REPO/archive/refs/tags/$TAG.tar.gz"
+else
+    curl -fsSL -o "$TMP/app.tar.gz" "https://github.com/$REPO/archive/refs/heads/$BRANCH.tar.gz"
+fi
 mkdir -p "$DEST" "$TMP/x"
 tar -xzf "$TMP/app.tar.gz" -C "$TMP/x" --strip-components=1
 cp -r "$TMP/x/deckforever" "$TMP/x/run.sh" "$TMP/x/README.md" "$DEST/"

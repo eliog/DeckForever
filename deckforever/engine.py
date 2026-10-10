@@ -21,10 +21,12 @@ import urllib.request
 from . import art
 from . import steam_shortcuts as ss
 
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 BNET_URL = ("https://www.battle.net/download/getInstallerForGame"
             "?os=win&gameProgram=BATTLENET_APP&version=Live")
 GE_API = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
+REPO = "eliog/DeckForever"
+APP_RELEASES_API = f"https://api.github.com/repos/{REPO}/releases/latest"
 APP_NAME = "DeckForever"                           # name of this app (window, desktop icon, Steam entry)
 OLD_APP_NAMES = ("steamdeck-forever", "WoW Forever Tools", "WoW Forever")
 SHORTCUT_BNET = "Battle.net"                       # preferred name of the main shortcut
@@ -266,6 +268,70 @@ class Engine:
             req.add_header("Authorization", f"Bearer {tok}")
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.load(r)
+
+    # ------------------------------------------------------------------ self-update (GitHub releases)
+    @staticmethod
+    def version_tuple(v):
+        nums = re.findall(r"\d+", v or "")
+        return tuple(int(n) for n in nums[:3]) or (0,)
+
+    def check_update(self, max_age_s=6 * 3600, force=False):
+        """Return {'latest': 'v0.4.0', 'newer': bool, 'url': tarball_url} using GitHub's latest release.
+        Cached in state.json so the app does not hit GitHub on every start."""
+        st = self.load_state()
+        cached = st.get("update_check") or {}
+        if not force and cached and time.time() - cached.get("at", 0) < max_age_s:
+            info = dict(cached)
+        else:
+            rel = self.github_json(APP_RELEASES_API)
+            tag = rel.get("tag_name", "")
+            info = {"latest": tag, "at": time.time(),
+                    "url": f"https://github.com/{REPO}/archive/refs/tags/{tag}.tar.gz",
+                    "notes": (rel.get("body") or "")[:2000]}
+            try:
+                self.save_state(update_check=info)
+            except OSError:
+                pass
+        info["newer"] = self.version_tuple(info.get("latest")) > self.version_tuple(VERSION)
+        info["current"] = VERSION
+        return info
+
+    def self_update(self, tag=None):
+        """Download the given (or latest) release and replace the app copy in root/app, keeping
+        the user's files. Returns the new version string. The caller restarts the app."""
+        info = self.check_update(force=True)
+        tag = tag or info["latest"]
+        url = f"https://github.com/{REPO}/archive/refs/tags/{tag}.tar.gz"
+        os.makedirs(self.downloads, exist_ok=True)
+        tarball = os.path.join(self.downloads, f"deckforever-{tag}.tar.gz")
+        self.download(url, tarball, f"Downloading DeckForever {tag}")
+        staging = self.app_home + ".new"
+        shutil.rmtree(staging, ignore_errors=True)
+        os.makedirs(staging)
+        with tarfile.open(tarball) as tf:
+            members = tf.getmembers()
+            top = members[0].name.split("/", 1)[0] if members else ""
+            _safe_extract(tf, staging)
+        src = os.path.join(staging, top)
+        if not os.path.isfile(os.path.join(src, "deckforever", "engine.py")):
+            shutil.rmtree(staging, ignore_errors=True)
+            raise EngineError(f"The {tag} download does not look like DeckForever.")
+        new_version = re.search(r'^VERSION = "([^"]+)"', open(os.path.join(src, "deckforever", "engine.py")).read(), re.M)
+        for item in ("deckforever", "run.sh", "README.md"):
+            dst = os.path.join(self.app_home, item)
+            if os.path.isdir(dst):
+                shutil.rmtree(dst)
+            elif os.path.exists(dst):
+                os.remove(dst)
+            if os.path.exists(os.path.join(src, item)):
+                shutil.move(os.path.join(src, item), dst)
+        os.chmod(os.path.join(self.app_home, "run.sh"), 0o755)
+        shutil.rmtree(staging, ignore_errors=True)
+        os.remove(tarball)
+        self.save_state(update_check={})   # forget the cached check; we are current now
+        v = new_version.group(1) if new_version else tag
+        self.log(f"Updated to {v}")
+        return v
 
     # ------------------------------------------------------------------ GE-Proton
     def installed_protons(self):
@@ -1294,8 +1360,11 @@ class Engine:
         protons = self.installed_protons()
         st = self.load_state()
         backups = self.list_backups()
+        upd = (self.load_state().get("update_check") or {})
         return {
             "version": VERSION,
+            "latest": upd.get("latest"),
+            "update_available": self.version_tuple(upd.get("latest")) > self.version_tuple(VERSION),
             "root": self.root,
             "proton": st.get("proton") or (protons[-1] if protons else None),
             "prefix": os.path.isdir(os.path.join(self.pfx, "drive_c")),

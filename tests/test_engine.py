@@ -387,6 +387,35 @@ class T(unittest.TestCase):
         self.e.install(open_bnet=False)
         self.assertIn("steam_start", calls)                  # declined: Steam comes back
 
+    def test_update_check_and_self_update(self):
+        import tarfile
+        self.assertTrue(eng.Engine.version_tuple("v0.4.0") > eng.Engine.version_tuple("0.3.9"))
+        self.assertEqual(eng.Engine.version_tuple("garbage"), (0,))
+        self.e.github_json = lambda url: {"tag_name": "v9.9.9", "body": "notes"}
+        os.makedirs(self.e.root, exist_ok=True)
+        info = self.e.check_update()
+        self.assertTrue(info["newer"]); self.assertEqual(info["latest"], "v9.9.9")
+        self.e.github_json = lambda url: (_ for _ in ()).throw(RuntimeError("offline"))
+        self.assertEqual(self.e.check_update()["latest"], "v9.9.9")       # cached, no network needed
+        # self_update: synthetic release tarball with a newer engine.py
+        src = os.path.join(self.tmp.name, "DeckForever-9.9.9")
+        touch(os.path.join(src, "deckforever/engine.py"), 'VERSION = "9.9.9"\n')
+        touch(os.path.join(src, "deckforever/__init__.py"), "")
+        touch(os.path.join(src, "run.sh"), "#!/bin/sh\n")
+        touch(os.path.join(src, "README.md"), "new")
+        tb = os.path.join(self.tmp.name, "rel.tar.gz")
+        with tarfile.open(tb, "w:gz") as tf:
+            tf.add(src, arcname="DeckForever-9.9.9")
+        touch(os.path.join(self.e.app_home, "deckforever/engine.py"), 'VERSION = "0.0.1"\n')
+        touch(os.path.join(self.e.app_home, "addons.conf"), "user file")
+        self.e.github_json = lambda url: {"tag_name": "v9.9.9"}
+        self.e.download = lambda url, dest, label: __import__("shutil").copy(tb, dest)
+        self.assertEqual(self.e.self_update(), "9.9.9")
+        self.assertIn('VERSION = "9.9.9"', open(os.path.join(self.e.app_home, "deckforever/engine.py")).read())
+        self.assertTrue(os.path.isfile(os.path.join(self.e.app_home, "addons.conf")))   # user file kept
+        self.assertTrue(os.access(os.path.join(self.e.app_home, "run.sh"), os.X_OK))
+        self.assertFalse(os.path.exists(self.e.app_home + ".new"))
+
     def test_require_flavor_message(self):
         with self.assertRaises(eng.EngineError) as cm:
             self.e.require_flavor()

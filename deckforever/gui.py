@@ -185,17 +185,53 @@ class MainWindow(Gtk.Window):
         exp.set_expanded(True)
         outer.pack_start(exp, True, True, 0)
 
+        frow = Gtk.Box(spacing=8)
         foot = Gtk.Label(label=f"Install folder: {self.engine.root}    v{eng.VERSION}")
         foot.set_xalign(0)
         foot.get_style_context().add_class("dim-label")
-        outer.pack_start(foot, False, False, 0)
+        frow.pack_start(foot, True, True, 0)
+        self.btn_update = Gtk.Button(label="Update")
+        self.btn_update.get_style_context().add_class("suggested-action")
+        self.btn_update.connect("clicked", lambda _b: self.run_task("Update", self.do_update))
+        self.btn_update.set_no_show_all(True)
+        frow.pack_start(self.btn_update, False, False, 0)
+        outer.pack_start(frow, False, False, 0)
+        self.foot = foot
         self.pulse_id = None
+        threading.Thread(target=self._check_update_bg, daemon=True).start()
 
     def _on_close(self, *_a):
         if self.worker and self.worker.is_alive():
             self.dialog_message("A task is still running (Steam may be closed or files may be moving).\n"
                                 "Wait for it to finish, or press Cancel first.", Gtk.MessageType.WARNING)
             return True        # keep the window open
+        return False
+
+    def _check_update_bg(self):
+        try:
+            info = self.engine.check_update()
+        except Exception as e:
+            GLib.idle_add(self.append_log, f"(update check skipped: {e})")
+            return
+        if info.get("newer"):
+            GLib.idle_add(self._show_update, info["latest"])
+
+    def _show_update(self, latest):
+        self.foot.set_text(f"Install folder: {self.engine.root}    v{eng.VERSION}  ->  {latest} available")
+        self.btn_update.set_label(f"Update to {latest}")
+        self.btn_update.show()
+        return False
+
+    def do_update(self):
+        v = self.engine.self_update()
+        self.ui.info(f"DeckForever was updated to {v}. It will now restart.")
+        GLib.idle_add(self._restart)
+
+    def _restart(self):
+        run = os.path.join(self.engine.app_home, "run.sh")
+        if os.access(run, os.X_OK):
+            os.execv(run, [run])
+        Gtk.main_quit()
         return False
 
     # ------------------------------------------------------------------ helpers
