@@ -439,12 +439,15 @@ class Engine:
         if not self.steam_running():
             raise EngineError(f"{self.proton_name} needs '{name}', which Steam has not downloaded yet. "
                               "Start Steam, then press Install again.")
-        self.step(f"Asking Steam to download {name} (about 500 MB)...")
+        # Explain first and wait for OK; only then hand over to Steam, so its window does not
+        # appear on top of this message before the user has read it.
+        self.ui.info(f"One more download is needed: '{name}' (about 500 MB). Proton cannot run "
+                     "without it.\n\nWhen you press OK, Steam opens a window asking to install it. "
+                     "Click Install (or Next) there and wait for the download to finish. DeckForever "
+                     "continues on its own when it is done.")
+        self.step(f"Waiting for Steam to download {name} (about 500 MB)...")
         subprocess.Popen(["xdg-open", f"steam://install/{appid}"], stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL, start_new_session=True)
-        self.ui.info(f"Steam will now ask to install '{name}' (about 500 MB), which Proton needs.\n\n"
-                     "Click Install / Next in Steam's window. DeckForever continues on its own once the "
-                     "download finishes.")
         deadline = time.time() + timeout_s
         while time.time() < deadline:
             self.check_cancel()
