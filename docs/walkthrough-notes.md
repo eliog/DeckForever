@@ -23,10 +23,19 @@ Screens are in `docs/screenshots/`, numbered in the order a new user meets them.
 | 6 | Right-click (L2) the zip > *Extract* > *Extract here* | `06-extract-menu.png` |
 | 7 | Double-click `DeckForever.desktop`; Dolphin asks "What do you wish to do with this file?": choose *Launch* | `07-dolphin-launch-prompt.png` |
 | 8 | KDE warning "This will start the program: DeckForever": choose *Continue* (both prompts appear only the first time) | `08-kde-trust-prompt.png` |
-| 9 | The DeckForever window, empty state | (pending) |
-| 10 | Install running; the "close Steam?" question; the Game Mode handoff | (pending) |
-| 11 | Game Mode library with the Battle.net, CurseForge and DeckForever tiles | (pending, Steam+R1) |
-| 12 | Battle.net login; WoW Forever install; first character screen | (pending, Steam+R1) |
+| 9 | The DeckForever window, empty state; press *Install* | `09-app-window.png` |
+| 10 | Install running (GE-Proton download and unpack) | `10-install-progress.png` |
+| 10b | Steam asks to install "Steam Linux Runtime 4.0" (first time only): click Install there | (not captured) |
+| 11 | Blizzard's Battle.net installer running on its own; do not log in | `11-battlenet-installing.png` |
+| 12 | "Also install CurseForge?": Yes | `12-curseforge-question.png` |
+| 13 | "Steam has to close for a moment": Yes | `13-close-steam-question.png` |
+| 14 | "Switch to Game Mode now?" with the login steps: Yes | `14-game-mode-offer.png` |
+| 15 | Game Mode library: Battle.net, CurseForge, DeckForever tiles | (pending, Steam+R1) |
+| 16 | Battle.net login (Steam + X keyboard); WoW Forever install; first character screen | (pending, Steam+R1) |
+
+Reference shots for the troubleshooting section: `97-steam-reopens-over-app.png` (fixed in 0.3.2:
+Desktop Steam is no longer restarted before the Game Mode switch), `98-battlenet-patch-service-error.png`
+(what you see when the Steam runtime is missing; fixed in 0.3.1).
 
 Why the download is a zip: Firefox renames downloaded `.desktop` files to `.desktop.download`
 (`99-why-zip-firefox-renames-desktop.png`); a zip is left alone and Dolphin extracts it with
