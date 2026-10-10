@@ -15,6 +15,36 @@ DeckForever is a community project. It is not affiliated with or endorsed by Bli
 Entertainment, Valve or CurseForge/Overwolf. World of Warcraft and Battle.net are trademarks of
 Blizzard Entertainment; Steam and Steam Deck are trademarks of Valve Corporation.
 
+## Step by step, with screenshots
+
+<table>
+<tr><td width="50%"><img src="docs/screenshots/01-power-menu.jpg" alt="Power menu"></td>
+<td><b>1. Switch to Desktop Mode.</b> Hold the power button, choose <i>Switch to Desktop</i>.<br><br>
+In Desktop Mode: right trackpad moves the pointer, <b>R2</b> is left click, <b>L2</b> is right click.</td></tr>
+<tr><td><img src="docs/screenshots/04-release-assets.png" alt="Release assets"></td>
+<td><b>2. Download the installer.</b> In Firefox open
+<a href="https://github.com/eliog/DeckForever/releases">github.com/eliog/DeckForever/releases</a>
+and tap <code>DeckForever-installer.zip</code>.</td></tr>
+<tr><td><img src="docs/screenshots/06-extract-menu.png" alt="Extract here"></td>
+<td><b>3. Extract it.</b> Open Dolphin (the folder icon in the taskbar), go to Downloads, right-click the zip (L2) and choose <i>Extract</i> &gt; <i>Extract here</i>.</td></tr>
+<tr><td><img src="docs/screenshots/07-dolphin-launch-prompt.png" alt="Launch prompt"></td>
+<td><b>4. Run it.</b> Double-click <code>DeckForever.desktop</code>, choose <b>Launch</b>, then <b>Continue</b> on the warning that follows. Both prompts appear only the first time.</td></tr>
+<tr><td><img src="docs/screenshots/09-app-window.png" alt="DeckForever window"></td>
+<td><b>5. Press Install.</b> The app downloads GE-Proton, asks Steam to fetch its runtime (click Install in Steam's window the first time), builds the Wine prefix and installs Battle.net. A Blizzard window appears on its own; do not log in there.</td></tr>
+<tr><td><img src="docs/screenshots/12-curseforge-question.png" alt="CurseForge question"></td>
+<td><b>6. Say yes to CurseForge</b> (the addon manager) and yes to closing Steam for a moment so the shortcuts can be written.</td></tr>
+<tr><td><img src="docs/screenshots/14-game-mode-offer.png" alt="Game Mode offer"></td>
+<td><b>7. Switch to Game Mode</b> when the app offers it. The Battle.net login is far easier there.</td></tr>
+<tr><td><img src="docs/screenshots/15-game-mode-library.jpg" alt="Library tiles"></td>
+<td><b>8. Open Battle.net</b> from the Non-Steam tab of the library. CurseForge and DeckForever are there too.</td></tr>
+<tr><td><img src="docs/screenshots/16-battlenet-login.jpg" alt="Battle.net login"></td>
+<td><b>9. Log in.</b> Press <b>Steam + X</b> for the keyboard. On the e-mail code page just type the digits. Tick <i>Keep me logged in</i>.</td></tr>
+<tr><td><img src="docs/screenshots/17-battlenet-forever-install.png" alt="Install WoW Forever"></td>
+<td><b>10. Install the game.</b> Select World of Warcraft, make sure Game Version says <i>WoW: Forever</i>, press <b>Install</b>, accept Blizzard's "Unsupported" handheld notice and the default folder.</td></tr>
+<tr><td><img src="docs/screenshots/21-character-screen.jpg" alt="Character screen"></td>
+<td><b>11. Play.</b> The game is playable before the download finishes. Next time: Steam, Battle.net, Play. Enable the controller UI in the game's Settings &gt; Gamepad.</td></tr>
+</table>
+
 ## For players
 
 1. Switch to **Desktop Mode** (Steam button > Power > Switch to Desktop).

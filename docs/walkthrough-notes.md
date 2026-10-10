@@ -36,7 +36,7 @@ Screens are in `docs/screenshots/`, numbered in the order a new user meets them.
 | 18 | Battle.net's "Unsupported" handheld notice: press Install anyway | `18-battlenet-unsupported-notice.png` |
 | 19 | "WoW: Forever Installation": keep the default folder, Start Install | `19-wow-forever-install-dialog.jpg` |
 | 20 | Installing; playable before the download completes | `20-wow-forever-installing.png` |
-| 21 | First character screen | (pending, Steam+R1) |
+| 21 | First character screen: it runs | `21-character-screen.jpg` |
 
 Privacy: Battle.net screenshots are cropped to remove the account name and friends list before
 they go into the repo. Never commit a shot with a BattleTag, e-mail or friends visible.
