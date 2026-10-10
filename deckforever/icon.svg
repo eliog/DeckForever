@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3a67"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="24" fill="url(#g)" stroke="#f5c542" stroke-width="4"/>
+  <path d="M64 22 L90 34 V62 C90 82 78 96 64 106 C50 96 38 82 38 62 V34 Z" fill="#1e293b" stroke="#f5c542" stroke-width="4" stroke-linejoin="round"/>
+  <text x="64" y="76" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="30" font-weight="bold" fill="#f5c542">DF</text>
+</svg>

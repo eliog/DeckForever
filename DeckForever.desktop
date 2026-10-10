@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DeckForever
+Comment=World of Warcraft: Forever on Steam Deck
+Exec=bash -c 'curl -fsSL https://raw.githubusercontent.com/eliog/DeckForever/main/bootstrap.sh | bash'
+Icon=applications-games
+Terminal=false
+Categories=Game;
