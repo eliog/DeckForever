@@ -141,10 +141,14 @@ def render(kind, theme, path):
         _text(cr, theme["title"], w * 0.38, h * 0.52, h * 0.22, white, max_w=w * 0.58)
         _text(cr, theme["subtitle"], w * 0.38, h * 0.70, h * 0.10, (0.75, 0.78, 0.85), bold=False, max_w=w * 0.58)
     elif kind == "hero":
-        _emblem(cr, theme["emblem"], w * 0.14, h / 2, h * 0.64, accent)
-        cr.set_source_rgba(1, 1, 1, 0.06)
-        _rounded_rect(cr, w * 0.26, h * 0.22, w * 0.5, h * 0.56, 24)
-        cr.fill()
+        # Backdrop only: Steam draws the logo (emblem + name) over the hero's bottom-left, so the
+        # hero must not repeat the emblem there. A faint, large emblem far right adds texture.
+        cr.save()
+        cr.push_group()
+        _emblem(cr, theme["emblem"], w * 0.86, h * 0.55, h * 1.1, accent)
+        cr.pop_group_to_source()
+        cr.paint_with_alpha(0.10)
+        cr.restore()
     elif kind == "logo":
         _emblem(cr, theme["emblem"], h * 0.5, h / 2, h * 0.8, accent)
         _text(cr, theme["title"], h * 1.05, h * 0.60, h * 0.42, white, max_w=w - h * 1.1)
