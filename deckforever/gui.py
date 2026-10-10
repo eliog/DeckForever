@@ -220,6 +220,19 @@ class MainWindow(Gtk.Window):
         self.foot.set_text(f"Install folder: {self.engine.root}    v{eng.VERSION}  ->  {latest} available")
         self.btn_update.set_label(f"Update to {latest}")
         self.btn_update.show()
+        # Ask right away too: the footer button is easy to miss. "Later" leaves the button in place.
+        if not (self.worker and self.worker.is_alive()):
+            d = Gtk.MessageDialog(transient_for=self, modal=True, message_type=Gtk.MessageType.QUESTION,
+                                  buttons=Gtk.ButtonsType.NONE,
+                                  text=f"A new version of DeckForever is available: {latest} (you have v{eng.VERSION}).\n\n"
+                                       "Update now? It takes a few seconds and the app restarts afterwards.")
+            d.add_button("Later", Gtk.ResponseType.CANCEL)
+            d.add_button(f"Update to {latest}", Gtk.ResponseType.OK)
+            d.set_default_response(Gtk.ResponseType.OK)
+            r = d.run()
+            d.destroy()
+            if r == Gtk.ResponseType.OK:
+                self.run_task("Update", self.do_update)
         return False
 
     def do_update(self):
