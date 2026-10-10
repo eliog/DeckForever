@@ -920,8 +920,12 @@ class Engine:
         return os.path.isfile(self.cf_appimage) and os.access(self.cf_appimage, os.X_OK)
 
     def curseforge_running(self):
-        r = subprocess.run(["pgrep", "-f", "--", re.escape(self.cf_appimage)], capture_output=True)
-        return r.returncode == 0
+        """True if CurseForge is running, however it was started: by absolute path, by the launcher
+        (relative ./CurseForge.AppImage) or as the unpacked /tmp/.mount_CurseF*/curseforge process."""
+        pat = r"CurseForge\.AppImage|\.mount_CurseF[^/]*/curseforge"
+        r = subprocess.run(["pgrep", "-f", "--", pat], capture_output=True, text=True)
+        me = str(os.getpid())
+        return any(pid and pid != me for pid in r.stdout.split())
 
     def install_curseforge(self, update=False):
         """Download the official CurseForge Linux build (an AppImage) into tools/."""
