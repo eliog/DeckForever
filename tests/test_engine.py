@@ -366,6 +366,26 @@ class T(unittest.TestCase):
         self.assertEqual(opened[0][1], "steam://install/4183110")
         self.assertTrue(self.e.ensure_runtime())          # already there: no prompt
 
+    def test_install_skips_desktop_steam_restart_before_game_mode_switch(self):
+        calls = []
+        for name in ("preflight", "self_install", "select_proton", "ensure_runtime", "init_prefix",
+                     "install_battlenet", "save_state", "steam_start", "switch_to_game_mode"):
+            setattr(self.e, name, lambda *a, _n=name, **k: calls.append(_n))
+        self.e.write_shortcuts = lambda restart_steam=True: calls.append(f"write({restart_steam})")
+        self.e.curseforge_installed = lambda: True
+        os.environ["DISPLAY"] = ":0"
+        self.e.in_game_mode = lambda: False
+        self.ui.answers["Switch to Game Mode"] = True
+        self.e.install(open_bnet=False)
+        self.assertIn("write(False)", calls)                 # no Desktop Steam restart...
+        self.assertIn("switch_to_game_mode", calls)          # ...because we switch right away
+        self.assertNotIn("steam_start", calls)
+        calls.clear()
+        self.ui.answers["Switch to Game Mode"] = False
+        self.ui.answers["Open Battle.net here"] = False
+        self.e.install(open_bnet=False)
+        self.assertIn("steam_start", calls)                  # declined: Steam comes back
+
     def test_require_flavor_message(self):
         with self.assertRaises(eng.EngineError) as cm:
             self.e.require_flavor()

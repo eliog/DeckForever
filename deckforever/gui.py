@@ -220,6 +220,7 @@ class MainWindow(Gtk.Window):
 
     def set_status(self, msg):
         self.status.set_text(msg)
+        self.refresh_status()          # keep the panel current while a task runs (cheap: a few stat calls)
         return False
 
     def set_progress(self, fraction):
@@ -301,6 +302,7 @@ class MainWindow(Gtk.Window):
         self.set_busy(False)
         self.set_progress(None)
         self.refresh_status()
+        self.present()                 # best effort: come back to the front if another app opened over us
         return False
 
     # ------------------------------------------------------------------ dialogs (main thread)

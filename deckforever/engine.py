@@ -793,8 +793,12 @@ class Engine:
     def launcher_sh(self):
         return os.path.join(self.app_home, "run.sh")
 
-    def write_shortcuts(self):
+    def write_shortcuts(self, restart_steam=True):
+        """Close Steam, write our entries, and (normally) start Steam again. The install flow passes
+        restart_steam=False when it is about to switch to Game Mode anyway, so Desktop Steam does not
+        pop up over the app; it calls steam_start() itself if the user declines the switch."""
         self.steam_stop()
+        ok = False
         try:
             self.step("Adding Steam shortcuts...")
             specs = self.shortcut_specs()
@@ -819,8 +823,10 @@ class Engine:
             if not self.shortcuts_present():
                 raise EngineError("The shortcut was written but could not be read back. See the log.")
             self.log("Shortcuts written")
+            ok = True
         finally:
-            self.steam_start()
+            if restart_steam or not ok:
+                self.steam_start()
 
     def remove_shortcuts(self):
         self.steam_stop()
@@ -1137,20 +1143,24 @@ class Engine:
                 self.ui.ask("Also install CurseForge (the addon manager) so it is available in Game Mode?", True):
             try:
                 self.install_curseforge()
+                self.step("CurseForge downloaded")
             except EngineError as e:
                 self.log(f"CurseForge skipped: {e}")
                 self.ui.error(f"CurseForge could not be installed ({e}). You can retry later with 'Install CurseForge'.")
-        self.write_shortcuts()
+        game_installed = bool(self.find_flavor_dir())
+        can_switch = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) and not self.in_game_mode()
+        # When we are about to offer a switch to Game Mode, do not bring Desktop Steam back first:
+        # it would open on top of this window and hide the offer.
+        self.write_shortcuts(restart_steam=not (can_switch and not game_installed))
         self.save_state()
         if self.curseforge_installed():
             self.configure_curseforge()
         name = self.main_shortcut_name()
-        if self.find_flavor_dir():
+        if game_installed:
             extra = f" '{self.cf_shortcut_name()}' is there too, already pointed at your Forever client." \
                 if self.curseforge_installed() else ""
             self.ui.info(f"Done. '{name}' is in your Steam library (Non-Steam tab). Press Play there.{extra}")
             return
-        can_switch = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")) and not self.in_game_mode()
         if can_switch and self.ui.ask(
                 f"Battle.net is ready. The login works best from Game Mode.\n\n"
                 f"Switch to Game Mode now? Once there:\n"
@@ -1165,6 +1175,7 @@ class Engine:
             except EngineError as e:
                 self.log(str(e))
                 self.ui.error(str(e))          # fall through to the written instructions
+        self.steam_start()                     # declined (or no switch possible): bring Desktop Steam back
         self.ui.info(f"Battle.net is ready.\n\n"
                      f"1. Switch to Game Mode and launch '{name}' from the Non-Steam tab.\n"
                      "2. Log in with Steam + X for the keyboard (tick 'Keep me logged in').\n"
