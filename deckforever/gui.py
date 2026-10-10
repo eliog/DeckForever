@@ -363,6 +363,15 @@ class MainWindow(Gtk.Window):
 
 
 def main():
+    # KDE (Wayland) derives the taskbar/title icon from the app id -> <appid>.desktop. A Python
+    # GTK app would announce itself as "python3"; name it after our desktop entry instead.
+    GLib.set_prgname("deckforever")
+    GLib.set_application_name(eng.APP_NAME)
+    if os.path.isfile(ICON):
+        try:
+            Gtk.Window.set_default_icon_from_file(ICON)
+        except Exception:
+            pass
     win = MainWindow()
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
