@@ -336,6 +336,35 @@ class T(unittest.TestCase):
             self.assertEqual(icons[name], os.path.join(grid, f"{appid}_icon.png"))
         self.assertEqual(sorted(set(made)), ["hero", "icon", "logo", "p", "wide"])
 
+    def test_ensure_runtime_waits_for_steam_download(self):
+        ge = os.path.join(self.steam, "compatibilitytools.d/GE-Proton10-30")
+        touch(os.path.join(ge, "toolmanifest.vdf"), '"manifest"\n{\n  "require_tool_appid" "4183110"\n}\n')
+        self.e.proton_name = "GE-Proton10-30"
+        # Steam not running: clear error, nothing launched
+        self.e.steam_running = lambda: False
+        with self.assertRaises(eng.EngineError):
+            self.e.ensure_runtime()
+        # Steam running: steam://install is opened, then the runtime "appears" and we return
+        self.e.steam_running = lambda: True
+        opened = []
+        import subprocess as sp
+        real_popen = sp.Popen
+        def fake_popen(cmd, **kw):
+            opened.append(cmd)
+            touch(os.path.join(self.steam, "steamapps/appmanifest_4183110.acf"),
+                  '"AppState"\n{\n\t"installdir"\t\t"SteamLinuxRuntime_4"\n}\n')
+            run = os.path.join(self.steam, "steamapps/common/SteamLinuxRuntime_4/run")
+            touch(run); os.chmod(run, 0o755)
+            class P: pass
+            return P()
+        sp.Popen = fake_popen
+        try:
+            self.assertTrue(self.e.ensure_runtime(timeout_s=10))
+        finally:
+            sp.Popen = real_popen
+        self.assertEqual(opened[0][:2], ["xdg-open", "steam://install/4183110"])
+        self.assertTrue(self.e.ensure_runtime())          # already there: no prompt
+
     def test_require_flavor_message(self):
         with self.assertRaises(eng.EngineError) as cm:
             self.e.require_flavor()

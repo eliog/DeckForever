@@ -207,6 +207,7 @@ class MainWindow(Gtk.Window):
         if not self.engine.bnet_installed():
             raise eng.EngineError("Battle.net is not installed yet. Press Install first.")
         self.engine.select_proton()
+        self.engine.ensure_runtime()
         self.engine.launch_battlenet()
         self.ui.info("Battle.net will open shortly (it can take up to a minute). Log in, then install or "
                      "update World of Warcraft: Forever from there.")

@@ -21,7 +21,7 @@ import urllib.request
 from . import art
 from . import steam_shortcuts as ss
 
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 BNET_URL = ("https://www.battle.net/download/getInstallerForGame"
             "?os=win&gameProgram=BATTLENET_APP&version=Live")
 GE_API = "https://api.github.com/repos/GloriousEggroll/proton-ge-custom/releases/latest"
@@ -414,6 +414,48 @@ class Engine:
             pass
         return libs
 
+    RUNTIME_NAMES = {"1628350": "Steam Linux Runtime 3.0 (sniper)", "4183110": "Steam Linux Runtime 4.0",
+                     "1391110": "Steam Linux Runtime 2.0 (soldier)"}
+
+    def required_runtime_appid(self, proton_dir=None):
+        try:
+            with open(os.path.join(proton_dir or self.proton_dir, "toolmanifest.vdf"), encoding="utf-8", errors="replace") as f:
+                m = re.search(r'"require_tool_appid"\s*"(\d+)"', f.read())
+        except OSError:
+            return None
+        return m.group(1) if m else None
+
+    def ensure_runtime(self, timeout_s=900):
+        """Make sure the Steam Linux Runtime this Proton needs is installed. Running Proton outside
+        its runtime container breaks HTTPS inside Wine (Battle.net's installer cannot reach the patch
+        service), so this is not optional. Steam downloads the runtime itself from a steam:// link;
+        the user confirms once in Steam's dialog."""
+        if self.required_runtime():
+            return True
+        appid = self.required_runtime_appid()
+        if not appid:
+            return True            # old Proton with no runtime requirement
+        name = self.RUNTIME_NAMES.get(appid, f"Steam tool {appid}")
+        if not self.steam_running():
+            raise EngineError(f"{self.proton_name} needs '{name}', which Steam has not downloaded yet. "
+                              "Start Steam, then press Install again.")
+        self.step(f"Asking Steam to download {name} (about 500 MB)...")
+        subprocess.Popen(["xdg-open", f"steam://install/{appid}"], stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL, start_new_session=True)
+        self.ui.info(f"Steam will now ask to install '{name}' (about 500 MB), which Proton needs.\n\n"
+                     "Click Install / Next in Steam's window. DeckForever continues on its own once the "
+                     "download finishes.")
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            self.check_cancel()
+            if self.required_runtime():
+                self.log(f"{name} is installed")
+                time.sleep(2)
+                return True
+            time.sleep(3)
+        raise EngineError(f"'{name}' did not finish installing. Let Steam complete the download "
+                          "(Library > Tools, or the Downloads page), then press Install again.")
+
     def proton_command(self, *args):
         cmd = [os.path.join(self.proton_dir, "proton"), "run", *args]
         runtime = self.required_runtime()
@@ -421,8 +463,8 @@ class Engine:
             cmd = [runtime, "--", *cmd]
         elif not getattr(self, "_warned_runtime", False):
             self._warned_runtime = True
-            self.log(f"Note: the Steam runtime required by {self.proton_name} is not installed; "
-                     "running Proton directly on the system instead.")
+            self.log(f"Warning: the Steam runtime required by {self.proton_name} is not installed; "
+                     "running Proton directly on the system (HTTPS inside Wine may fail).")
         env = os.environ.copy()
         env.update({"STEAM_COMPAT_DATA_PATH": self.prefix,
                     "STEAM_COMPAT_CLIENT_INSTALL_PATH": self.steam_root,
@@ -1083,6 +1125,7 @@ class Engine:
             except EngineError as e:
                 self.log(f"Existing install not adopted ({e}); continuing with a fresh install.")
         self.select_proton()
+        self.ensure_runtime()
         self.init_prefix()
         self.install_battlenet(force_bnet)
         if not self.curseforge_installed() and not env("NO_CURSEFORGE") and \
@@ -1179,6 +1222,7 @@ class Engine:
     def update_proton(self):
         self.preflight()
         self.install_latest_proton()
+        self.ensure_runtime()
         if self.bnet_installed():
             self.write_shortcuts()
         self.save_state()

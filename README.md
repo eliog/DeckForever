@@ -81,6 +81,10 @@ third-party logos are shipped.
   clicks through to the Battle.net window there. Log in from Game Mode instead, or drag the
   window to the top of the screen, or enable the Plasma keyboard (System Settings > Keyboard
   > Virtual Keyboard > Maliit).
+- **Battle.net installer says it cannot connect to the patch service (BLZBNTBTS00000028)**: Proton
+  ran without its Steam Linux Runtime, which breaks HTTPS inside Wine. The app now asks Steam to
+  download the runtime first (one click in Steam's window); if that was skipped, open Steam,
+  let the "Steam Linux Runtime" download finish (Library > Tools), then press Install again.
 - **Battle.net broke after a Blizzard update**: Update Proton, then Fresh reinstall if needed.
 - **Game shows as not installed after adopting or reinstalling**: in Battle.net just press
   **Install** and accept the default folder (`C:\Program Files (x86)\World of Warcraft`). It
