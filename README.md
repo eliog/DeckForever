@@ -18,9 +18,12 @@ Blizzard Entertainment; Steam and Steam Deck are trademarks of Valve Corporation
 ## For players
 
 1. Switch to **Desktop Mode** (Steam button > Power > Switch to Desktop).
-2. Open Firefox, download **DeckForever.desktop** from
-   https://github.com/eliog/DeckForever/releases and double-click it. KDE asks once whether
-   to run it. Choose Continue. (Or, in Konsole:
+2. Open Firefox and download **DeckForever-installer.zip** from
+   https://github.com/eliog/DeckForever/releases. Open Dolphin (the file manager in the
+   taskbar), go to Downloads, right-click the zip, choose *Extract* > *Extract archive here*,
+   then double-click **DeckForever.desktop**. KDE asks once whether to run it: choose Continue.
+   (It is a zip because Firefox renames downloaded `.desktop` files to `.desktop.download`,
+   which cannot be run. Alternative, in Konsole:
    `curl -fsSL https://raw.githubusercontent.com/eliog/DeckForever/main/bootstrap.sh | bash`)
 3. The DeckForever window opens. Press **Install**. It also offers to install
    **CurseForge**, the addon manager, so you can manage addons from Game Mode. It also offers to install **CurseForge**,
