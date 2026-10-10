@@ -20,7 +20,7 @@ Blizzard Entertainment; Steam and Steam Deck are trademarks of Valve Corporation
 1. Switch to **Desktop Mode** (Steam button > Power > Switch to Desktop).
 2. Open Firefox and download **DeckForever-installer.zip** from
    https://github.com/eliog/DeckForever/releases. Open Dolphin (the file manager in the
-   taskbar), go to Downloads, right-click the zip, choose *Extract* > *Extract archive here*,
+   taskbar), go to Downloads, right-click the zip, choose *Extract* > *Extract here*,
    then double-click **DeckForever.desktop**. KDE asks once whether to run it: choose Continue.
    (It is a zip because Firefox renames downloaded `.desktop` files to `.desktop.download`,
    which cannot be run. Alternative, in Konsole:
