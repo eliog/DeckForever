@@ -30,12 +30,19 @@ Screens are in `docs/screenshots/`, numbered in the order a new user meets them.
 | 12 | "Also install CurseForge?": Yes | `12-curseforge-question.png` |
 | 13 | "Steam has to close for a moment": Yes | `13-close-steam-question.png` |
 | 14 | "Switch to Game Mode now?" with the login steps: Yes | `14-game-mode-offer.png` |
-| 15 | Game Mode library: Battle.net, CurseForge, DeckForever tiles | (pending, Steam+R1) |
-| 16 | Battle.net login (Steam + X keyboard); WoW Forever install; first character screen | (pending, Steam+R1) |
+| 15 | Game Mode library, Non-Steam tab: Battle.net, CurseForge, DeckForever tiles | `15-game-mode-library.jpg` |
+| 16 | Battle.net login (type with Steam + X) | `16-battlenet-login.jpg` |
+| 17 | Battle.net: World of Warcraft, Game Version "WoW: Forever", press Install (account panel cropped) | `17-battlenet-forever-install.png` |
+| 18 | Battle.net's "Unsupported" handheld notice: press Install anyway | `18-battlenet-unsupported-notice.png` |
+| 19 | "WoW: Forever Installation": keep the default folder, Start Install | `19-wow-forever-install-dialog.jpg` |
+| 20 | Installing; playable before the download completes | `20-wow-forever-installing.png` |
+| 21 | First character screen | (pending, Steam+R1) |
 
-Reference shots for the troubleshooting section: `97-steam-reopens-over-app.png` (fixed in 0.3.2:
-Desktop Steam is no longer restarted before the Game Mode switch), `98-battlenet-patch-service-error.png`
-(what you see when the Steam runtime is missing; fixed in 0.3.1).
+Privacy: Battle.net screenshots are cropped to remove the account name and friends list before
+they go into the repo. Never commit a shot with a BattleTag, e-mail or friends visible.
+
+Reference shot for the troubleshooting section: `98-battlenet-patch-service-error.png` (what you see
+when the Steam runtime is missing; fixed in 0.3.1).
 
 Why the download is a zip: Firefox renames downloaded `.desktop` files to `.desktop.download`
 (`99-why-zip-firefox-renames-desktop.png`); a zip is left alone and Dolphin extracts it with
