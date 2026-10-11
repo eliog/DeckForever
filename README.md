@@ -75,8 +75,7 @@ Steam Deck tab then shows how to set the Deck's Quick Access > Performance menu 
    which cannot be run. Alternative, in Konsole:
    `curl -fsSL https://raw.githubusercontent.com/eliog/DeckForever/main/bootstrap.sh | bash`)
 3. The DeckForever window opens. Press **Install**. It also offers to install
-   **CurseForge**, the addon manager, so you can manage addons from Game Mode. It also offers to install **CurseForge**,
-   the addon manager, so you can manage addons from Game Mode.
+   **CurseForge**, the addon manager, so you can manage addons from Game Mode.
    - If you already have WoW installed through NonSteamLaunchers, Lutris, Bottles or Heroic,
      the app finds it and offers to adopt it, so nothing is downloaded twice.
    - Steam closes and reopens once so the shortcut can be written.
@@ -104,7 +103,6 @@ restart Steam.
 | Button | What it does |
 |---|---|
 | Install / Repair | Everything above. Safe to press again at any time; it only redoes what is missing. Once WoW is installed, Repair also points CurseForge at it. |
-| Install CurseForge | Downloads the official CurseForge Linux app, adds a `CurseForge` entry to Steam (native, works in Game Mode with the trackpad and Steam + X) and registers your Forever client in it so no browsing for folders is needed. |
 | Install CurseForge | Downloads the official CurseForge Linux app, adds a `CurseForge` entry to Steam (native, works in Game Mode with the trackpad and Steam + X) and registers your Forever client in it so no browsing for folders is needed. |
 | Back up settings | Saves WTF (settings, keybinds, macros, addon data), Interface, Fonts and the Battle.net config to `backups/`. |
 | Restore | Puts a backup back. |
@@ -167,7 +165,6 @@ command line: `./run.sh check-update` and `./run.sh update`.
 ```
 ~/Games/DeckForever/
   app/                        the app itself (python package + run.sh)
-  tools/CurseForge.AppImage   the CurseForge app (its own settings stay in ~/.config/CurseForge)
   tools/CurseForge.AppImage   the CurseForge app (its own settings stay in ~/.config/CurseForge)
   prefix/                     Wine prefix; Battle.net lives here
   games/World of Warcraft/    game files, symlinked into the prefix
