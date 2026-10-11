@@ -50,9 +50,9 @@ and tap <code>DeckForever-installer.zip</code>.</td></tr>
 
 ## In game: the DeckForever addon
 
-Once WoW runs, add the [DeckForever addon](https://github.com/eliog/DeckForeverAddon): download the
-zip from its [releases](https://github.com/eliog/DeckForeverAddon/releases) (CurseForge listing
-coming soon) and extract it into
+Once WoW runs, add the [DeckForever addon](https://github.com/eliog/DeckForeverAddon): search for
+*DeckForever* in CurseForge (installed by this app; [project page](https://www.curseforge.com/projects/1739370)),
+or download the zip from its [releases](https://github.com/eliog/DeckForeverAddon/releases) and extract it into
 `World of Warcraft/_classic_beta_/Interface/AddOns/`. On first login it offers a preset; its
 Steam Deck tab then shows how to set the Deck's Quick Access > Performance menu to match.
 
@@ -209,7 +209,7 @@ builds on.
 ## Roadmap / notes
 
 - **DeckForever addon**: released as [DeckForeverAddon](https://github.com/eliog/DeckForeverAddon)
-  (v1.0.0); CurseForge listing as *DeckForever* to follow.
+  and on [CurseForge](https://www.curseforge.com/projects/1739370) as *DeckForever*.
 - **Proton version policy.** A fresh install downloads the newest GE-Proton (11-7 as of
   October 2026, verified with WoW Forever). After that the app keeps using the build the
   shortcut was written with; only *Update Proton* moves to a newer one, so a surprise GE
