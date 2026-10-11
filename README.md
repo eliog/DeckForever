@@ -8,8 +8,11 @@ Blizzard does not support SteamOS. This app automates the community-proven route
 Battle.net running under GE-Proton as a non-Steam game. Nothing from Blizzard is
 redistributed; the Battle.net installer is downloaded from Blizzard when you press Install.
 
-Addon management is handled by CurseForge, which this app installs and configures; Steam Deck
-in-game presets will come from the companion addon (see `ADDON.md`).
+**Its companion, the [DeckForever addon](https://github.com/eliog/DeckForeverAddon)**, does the
+in-game half: one-press graphics presets measured on a Steam Deck (Battery, Balanced, Max FPS,
+Max Quality), a picture of the Deck's Quick Access settings to match, and controller navigation.
+The two are designed to be used together; see [In game: the DeckForever addon](#in-game-the-deckforever-addon).
+Addon management is handled by CurseForge, which this app installs and configures.
 
 DeckForever is a community project. It is not affiliated with or endorsed by Blizzard
 Entertainment, Valve or CurseForge/Overwolf. World of Warcraft and Battle.net are trademarks of
@@ -44,6 +47,21 @@ and tap <code>DeckForever-installer.zip</code>.</td></tr>
 <tr><td><img src="docs/screenshots/21-character-screen.jpg" alt="Character screen"></td>
 <td><b>11. Play.</b> The game is playable before the download finishes. Next time: Steam, Battle.net, Play. Enable the controller UI in the game's Settings &gt; Gamepad.</td></tr>
 </table>
+
+## In game: the DeckForever addon
+
+Once WoW runs, add the [DeckForever addon](https://github.com/eliog/DeckForeverAddon): download the
+zip from its [releases](https://github.com/eliog/DeckForeverAddon/releases) (CurseForge listing
+coming soon) and extract it into
+`World of Warcraft/_classic_beta_/Interface/AddOns/`. On first login it offers a preset; its
+Steam Deck tab then shows how to set the Deck's Quick Access > Performance menu to match.
+
+| Preset | Frame rate | Battery life (Deck OLED, questing) |
+|---|---|---|
+| Battery | 30 fps | ~4.3 h |
+| Balanced | 45 fps, with shadows | ~3.7 h |
+| Max FPS | 60 fps | ~2.8 h |
+| Max Quality | 30 fps, everything high (plugged in) | ~2.5 h |
 
 ## For players
 
@@ -193,9 +211,8 @@ builds on.
 
 ## Roadmap / notes
 
-- **DeckForever addon** (repo `DeckForeverAddon`, listed on CurseForge as *DeckForever*): an
-  in-game addon with Steam Deck presets; see `ADDON.md`. Addon catalog duties are handled by
-  CurseForge, which this app installs and configures.
+- **DeckForever addon**: released as [DeckForeverAddon](https://github.com/eliog/DeckForeverAddon)
+  (v1.0.0); CurseForge listing as *DeckForever* to follow.
 - **Proton version policy.** A fresh install downloads the newest GE-Proton (11-7 as of
   October 2026, verified with WoW Forever). After that the app keeps using the build the
   shortcut was written with; only *Update Proton* moves to a newer one, so a surprise GE
